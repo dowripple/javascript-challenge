@@ -7,7 +7,11 @@ var table = d3.select('#ufo-table');
 var tbody = table.select('tbody');
 
 // variables for the filtering
+// buttons (filter and clear)
 var filterButton = d3.select('#filter-btn');
+var clearButton = d3.select('#filter-clear');
+
+// filter inputs
 var filterDatetime = d3.select('#datetime');
 var filterCity = d3.select('#city');
 var filterState = d3.select('#state');
@@ -60,55 +64,81 @@ function addSelectOptions(selectBox, optionArray) {
     // loop through array, adding 1 option per row
     for (var i=0; i < optionArray.length; ++i) {
 
-        // create the option
-        var option = document.createElement('OPTION');
-        option.text = optionArray[i];
-        option.value = optionArray[i];
+        var option = selectBox.append('option').text(optionArray[i]);
 
-        // append to the select
-        selectBox.add(option);
-        // selectBox.append(option);
     }
 }
 
 // assemble the filter drop downs
-var cities = distinctValues(tableData, 'city');
-
-// console.log(filterCity)
-var option = document.createElement('option');
-option.text = 'test';
-option.value = 'test';
-
-filterCity.optionArray.add(option)
-
-// addSelectOptions(filterCity, distinctValues(tableData, 'city'));
-
-// test function to console log
-// var cities = [];
-
-// cities = distinctValues(data, 'city');
-
-// console.log(cities)
+addSelectOptions(filterCity, distinctValues(tableData, 'city'));
+addSelectOptions(filterState, distinctValues(tableData, 'state'));
+addSelectOptions(filterCountry, distinctValues(tableData, 'country'));
+addSelectOptions(filterShape, distinctValues(tableData, 'shape'));
 
 // function to filter the data
 function filterData() {
 
         // get the date value for the filter
-        var filterDate = filterDatetime.property('value');
+        var dateValue = filterDatetime.property('value');
+        var cityValue = filterCity.property('value');
+        var stateValue = filterState.property('value');
+        var countryValue = filterCountry.property('value');
+        var shapeValue = filterShape.property('value');
+
+        var bolFilter = false;
+        var filteredData = tableData;
 
         // if the filter is not empty, proceed
-        if (filterDate != '') {
+        if (dateValue != '') {
     
             // create a filtered dataset, matching on date
-            var filteredData = tableData.filter(ufo => ufo.datetime === filterDate);
+            filteredData = filteredData.filter(ufo => ufo.datetime === dateValue);
+            bolFilter = true;
+        
+        } 
     
+        // city
+        if (cityValue != '') {
+
+            // create a filtered dataset, matching on date
+            filteredData = filteredData.filter(ufo => ufo.city === cityValue);
+            bolFilter = true;
+
+        }    
+        
+        // state filter
+        if (stateValue != '') {
+
+            filteredData = filteredData.filter(ufo => ufo.state === stateValue);
+            bolFilter = true;
+        }
+
+        // country
+        if (countryValue != '') {
+
+            filteredData = filteredData.filter(ufo => ufo.country === countryValue);
+            bolFilter = true;
+
+        }
+
+        // shapes
+        if (shapeValue != '') {
+
+            filteredData = filteredData.filter(ufo => ufo.shape === shapeValue);
+            bolFilter = true;
+
+        }
+        // if any of the filters were used, create the table from the filter data set
+        if (bolFilter) {
+            
             // render the table with the filtered data
             renderTable(filteredData);
-    
+
         } else {
-    
-            // reset the table with the original data
+            
+            // render table with original data
             renderTable(tableData);
+
         }
 }
 
@@ -119,11 +149,36 @@ filterButton.on('click', function() {
 
 });
 
+// clear filter button
+clearButton.on('click', function() {
+
+    // clear the inputs
+    filterDatetime.property('value','');
+    filterCity.property('value','');
+    filterState.property('value','');
+    filterCountry.property('value','');
+    filterShape.property('value','');
+
+    // reinitialize the table (with no filters)
+    filterData();
+
+})
+
 // also to the input for after update
 filterDatetime.on('change', function() {
-    
+    filterData(); 
+})
+filterCity.on('change',function() {
     filterData();
-    
+})
+filterState.on('change',function() {
+    filterData();
+})
+filterCountry.on('change',function() {
+    filterData();
+})
+filterShape.on('change',function() {
+    filterData();
 })
 
 // initialize the table
