@@ -11,7 +11,7 @@ I used the default html page provided in the assignment.  The javascript file ap
 #### Level 2: Multiple Search Categories (Optional)
 Level 2 has much of the same functionality as the first part (renderTable and filterTable functions).  There are new functions to provide the user the ability to filter by all of the fields in the data.  A function called "distinctValues" returns an array of distinct values of a field.  The arguments are the data object and the field (key).  I made another function called "addSelectOptions" which takes in a select object and an array of values (that will become the select's options).  Using those functions, I made a series of calls to populate the new filter select objects (i.e. "addSelectOptions(filterCity, distinctValues(tableData, 'city'));").  I also added a filter reset button, so the user can clear all filters and start over.  I added function calls to the filterData function, so that it would run anytime a filter object is changed.
 
-### Next Level: Intelligent Search Categories (will come back)
+#### Next Level: Intelligent Search Categories (will come back)
 For next steps, I would make more intelligent filter controls, that use the other filter values.  So if "ca" is selected as a state, only California cities would show up in the city drop-down list.  
 
 #### Contents
